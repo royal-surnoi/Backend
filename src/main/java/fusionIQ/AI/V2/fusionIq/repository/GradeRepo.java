@@ -1,0 +1,10 @@
+package fusionIQ.AI.V2.fusionIq.repository;
+
+import fusionIQ.AI.V2.fusionIq.data.Grade;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface GradeRepo extends JpaRepository<Grade,Long> {
+    List<Grade> findAllByProjectId(Long projectId);
+}
