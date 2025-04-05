@@ -21,8 +21,8 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://fusioniq-dev.cox0wuaim3oy.us-east-1.rds.amazonaws.com:3306/dev?createDatabaseIfNotExist=true");
-        config.setUsername("app_user");
-        config.setPassword("AppPassword@123");
+        config.setUsername("admin");
+        config.setPassword("Lqh31?SE8>8M~UPrJ)U:njrJHX<j");
         config.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728"); // 128 MB
         return new HikariDataSource(config);
     }
