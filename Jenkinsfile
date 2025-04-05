@@ -25,16 +25,12 @@ pipeline {
             }
         }
         stage('containerization') {
-            steps {
-                stage('containerization') {
                     steps {
                         script {
                             def imageTag = "${docker_registry}:${pomVersion}"
                             echo "Building Docker image with tag: ${imageTag}"
                             sh "docker build -t ${imageTag} ."
                         }
-                    }
-                }
                 // script{
                 //     sh '''
                 //         echo "Building Docker image with tag: ${docker_registry}:${pomVersion}"
