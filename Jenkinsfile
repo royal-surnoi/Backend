@@ -3,11 +3,11 @@ pipeline {
     tools {
         maven "maven-3.9.8"
     }
-    // environment {
-    //     docker_registry = 'iamroyalreddy/fusion-be'
-    //     DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
-    //     SONAR_SCANNER_HOME = tool name: 'sonarqube'
-    // }
+    environment {
+        docker_registry = 'iamroyalreddy/fusion-backend'
+        DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
+        SONAR_SCANNER_HOME = tool name: 'sonarqube'
+    }
     stages {
         stage('Build and Package'){
             steps{
@@ -34,12 +34,12 @@ pipeline {
                 }
             }
         }
-        // stage('Publish Docker Image') {
-        //     steps {
-        //         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-        //         sh "docker push $docker_registry:$GIT_COMMIT"
-        //     }       
-        // }
+        stage('Publish Docker Image') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh "docker push $docker_registry:$GIT_COMMIT"
+            }       
+        }
 
     }
 }
