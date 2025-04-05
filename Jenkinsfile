@@ -6,7 +6,7 @@ pipeline {
     environment {
         docker_registry = 'iamroyalreddy/fusion-backend'
         DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
-        pomVersion=''
+        pomVersion = ''
         // SONAR_SCANNER_HOME = tool name: 'sonarqube'
     }
     stages {
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script{
                     sh '''
-                        docker build -t $docker_registry:"${pomVersion}" .
+                        docker build -t $docker_registry:$pomVersion .
                     '''
                     // sh '''
                     //     EXISTING_IMAGE=$(docker images -q $docker_registry)
