@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script{
                     sh '''
-                        docker build -t $docker_registry:$pomVersion .
+                        docker build -t $docker_registry:"${pomVersion}" .
                     '''
                     // sh '''
                     //     EXISTING_IMAGE=$(docker images -q $docker_registry)
