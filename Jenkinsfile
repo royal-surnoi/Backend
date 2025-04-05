@@ -6,7 +6,7 @@ pipeline {
     environment {
         docker_registry = 'iamroyalreddy/fusion-backend'
         DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
-        SONAR_SCANNER_HOME = tool name: 'sonarqube'
+        // SONAR_SCANNER_HOME = tool name: 'sonarqube'
     }
     stages {
         stage('Build and Package'){
