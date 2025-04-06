@@ -42,22 +42,22 @@ pipeline {
             }       
         }
 
-        stage('Deploy') {
-            // when {
-            //     expression{
-            //         params.Deploy == 'true'
-            //     }
-            // }
-            steps {
-                script {
-                        def params = [
-                            string(name: 'VERSION', value: "$pomVersion"),
-                            string(name: 'ENVIRONMENT', value: "DEV")
-                        ]
-                        build job: "project-deploy", wait: true, parameters: params
-                    }
-            }
-        }
+        // stage('Deploy') {
+        //     // when {
+        //     //     expression{
+        //     //         params.Deploy == 'true'
+        //     //     }
+        //     // }
+        //     steps {
+        //         script {
+        //                 def params = [
+        //                     string(name: 'VERSION', value: "$pomVersion"),
+        //                     string(name: 'ENVIRONMENT', value: "DEV")
+        //                 ]
+        //                 build job: "project-deploy", wait: true, parameters: params
+        //             }
+        //     }
+        // }
 
         stage('Archive Image Version') {
             steps {
