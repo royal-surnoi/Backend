@@ -50,7 +50,7 @@ pipeline {
                 script {
                         def params = [
                             string(name: 'VERSION', value: "$pomVersion"),
-                            // string(name: 'environment', value: "dev")
+                            string(name: 'ENVIRONMENT', value: "DEV")
                         ]
                         build job: "project-deploy", wait: true, parameters: params
                     }
