@@ -16,6 +16,8 @@ pipeline {
                     def pom = readMavenPom(file: 'pom.xml')
                     pomVersion = pom.version
                     echo "Project version: ${pomVersion}"
+                    // Save version to a file
+                    writeFile file: 'image-version.txt', text: pomVersion
                 }
             }
         }
@@ -54,6 +56,12 @@ pipeline {
                         ]
                         build job: "project-deploy", wait: true, parameters: params
                     }
+            }
+        }
+
+        stage('Archive Image Version') {
+            steps {
+                archiveArtifacts artifacts: 'image-version.txt', onlyIfSuccessful: true
             }
         }
         
