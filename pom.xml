@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>fusionIQ.AI.V2</groupId>
 	<artifactId>fusionIq</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<name>fusionIq</name>
 	<description>fusionIQ.AI Web Application</description>
 	<properties>
