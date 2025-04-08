@@ -3,11 +3,15 @@ pipeline {
     tools {
         maven "maven-3.9.8"
     }
+    options{
+        disableConcurrentBuilds()
+        disableResume()
+        timeout(time: 1, unit: "HOURS")
+    }
     environment {
         docker_registry = 'iamroyalreddy/fusion-backend'
         DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
         pomVersion = ''
-        // SONAR_SCANNER_HOME = tool name: 'sonarqube'
     }
     stages {
         stage('Read POM') {
@@ -41,24 +45,6 @@ pipeline {
                 sh "docker push $docker_registry:${pomVersion}"
             }       
         }
-
-        // stage('Deploy') {
-        //     // when {
-        //     //     expression{
-        //     //         params.Deploy == 'true'
-        //     //     }
-        //     // }
-        //     steps {
-        //         script {
-        //                 def params = [
-        //                     string(name: 'VERSION', value: "$pomVersion"),
-        //                     string(name: 'ENVIRONMENT', value: "DEV")
-        //                 ]
-        //                 build job: "project-deploy", wait: true, parameters: params
-        //             }
-        //     }
-        // }
-
         stage('Archive Image Version') {
             steps {
                 archiveArtifacts artifacts: 'image-version.txt', onlyIfSuccessful: true
