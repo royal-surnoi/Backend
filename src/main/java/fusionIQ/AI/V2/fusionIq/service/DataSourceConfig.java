@@ -20,9 +20,9 @@ public class DataSourceConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://fusioniq-dev.cox0wuaim3oy.us-east-1.rds.amazonaws.com:3306/dev?createDatabaseIfNotExist=true");
+        config.setJdbcUrl("jdbc:mysql://dev.db.fusioniq.com:3306/dev?createDatabaseIfNotExist=true");
         config.setUsername("admin");
-        config.setPassword("~~7tZe0p#MXl5B*DwkPOY_7M<W44");
+        config.setPassword("!L|?lc:8NKyhfUVN_lne4Ol)<zX$");
         config.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728"); // 128 MB
         return new HikariDataSource(config);
     }
