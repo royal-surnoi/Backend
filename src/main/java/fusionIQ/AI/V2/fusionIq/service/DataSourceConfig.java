@@ -22,7 +22,7 @@ public class DataSourceConfig {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://prod.db.fusioniq.com:3306/prod?createDatabaseIfNotExist=true");
         config.setUsername("admin");
-        config.setPassword("]YI8O[#S(B$Y3F1x?l)t8*9k:nBd");
+        config.setPassword("5MqZ[~RZJOXR#7Hj0UytsqDM]~]F");
         config.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728"); // 128 MB
         return new HikariDataSource(config);
     }
