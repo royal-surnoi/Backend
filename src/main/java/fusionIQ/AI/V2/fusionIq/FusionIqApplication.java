@@ -51,7 +51,7 @@ FusionIqApplication {
 		return new WebMvcConfigurer() {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:4200")
+						.allowedOrigins("http://fusioniq-v3-fe.s3-website-us-east-1.amazonaws.com", "http://localhost:4200")
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
 						.allowedHeaders("*");
 			}
@@ -59,4 +59,4 @@ FusionIqApplication {
 	}
 }
 
-// "http://fusioniq-v3-fe.s3-website-us-east-1.amazonaws.com", 
+// 
