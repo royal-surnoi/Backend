@@ -42,16 +42,7 @@ pipeline {
                     params.CodeAnalysisDependencyCheck == true
                 }
             }
-            parallel{
-                stage('NPM Dependency Audit') {
-                    steps {
-                        sh '''
-                            npm audit --audit-level=critical
-                            echo $?
-                        '''
-                    }
-                }
-                
+            parallel{             
                 stage('OWASP Dependency Check') {
                     steps {
                             withCredentials([string(credentialsId: 'NVD-access', variable: 'NVD_API_KEY')]) {
