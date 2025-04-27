@@ -12,6 +12,7 @@ pipeline {
         docker_registry = 'iamroyalreddy/fusion-backend'
         DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
         pomVersion = ''
+        imageTag = ''
     }
     parameters {
         booleanParam(name: 'CodeAnalysisDependencyCheck', defaultValue: false, description: 'is it required Code Analysis and Dependency Check')
