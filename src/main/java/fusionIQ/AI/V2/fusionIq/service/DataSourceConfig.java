@@ -14,21 +14,42 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
+
+// Devops-testing pupose code has been added
 @Configuration
 public class DataSourceConfig {
 
     @Bean
-    public DataSource dataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://dev.db.fusioniq.com:3306/dev?createDatabaseIfNotExist=true");
-        config.setUsername("admin");
-        config.setPassword("l8YsXbkYze*7)Qr>||rZ#IWo8$7Y");
-        config.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728"); // 128 MB
-        return new HikariDataSource(config);
+    public DataSource dataSource(DataSourceProperties properties) {
+        HikariDataSource dataSource = properties
+            .initializeDataSourceBuilder()
+            .type(HikariDataSource.class)
+            .build();
+        dataSource.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728");
+        return dataSource;
     }
+
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource());
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 }
+
+// @Configuration
+// public class DataSourceConfig {
+
+//     @Bean
+//     public DataSource dataSource() {
+//         HikariConfig config = new HikariConfig();
+//         config.setJdbcUrl("jdbc:mysql://dev.db.fusioniq.com:3306/dev?createDatabaseIfNotExist=true");
+//         config.setUsername("admin");
+//         config.setPassword("l8YsXbkYze*7)Qr>||rZ#IWo8$7Y");
+//         config.addDataSourceProperty("connectionInitSql", "SET GLOBAL max_allowed_packet=134217728"); // 128 MB
+//         return new HikariDataSource(config);
+//     }
+//     @Bean
+//     public PlatformTransactionManager transactionManager() {
+//         return new DataSourceTransactionManager(dataSource());
+//     }
+// }
 
