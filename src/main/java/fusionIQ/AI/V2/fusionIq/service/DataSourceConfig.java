@@ -15,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 
-// Devops-testing pupose code has been added
+// Devops-testing purpose code has been added
 @Configuration
 public class DataSourceConfig {
 
