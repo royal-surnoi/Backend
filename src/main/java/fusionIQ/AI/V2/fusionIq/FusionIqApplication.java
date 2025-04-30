@@ -28,6 +28,7 @@ FusionIqApplication {
 	@Value("${aws.secretKey}")
 	private String secretKey;
 
+
 	@PostConstruct
 	public void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Kolkata"));
@@ -46,16 +47,36 @@ FusionIqApplication {
 				.build();
 	}
 
+	@Value("${cors.allowed-origins}")
+	private String allowedOrigins;
+
+
 	@Bean
 	public WebMvcConfigurer mvcConfigurer() {
 		return new WebMvcConfigurer() {
+			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://royalreddy.site", "http://localhost:4200")
-						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-						.allowedHeaders("*");
+					.allowedOrigins(allowedOrigins.split(","))
+					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+					.allowedHeaders("*");
 			}
 		};
 	}
+
+	// @Bean
+	// public WebMvcConfigurer mvcConfigurer() {
+	// 	return new WebMvcConfigurer() {
+	// 		public void addCorsMappings(CorsRegistry registry) {
+	// 			registry.addMapping("/**")
+	// 					.allowedOrigins("http://localhost:4200")
+	// 					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+	// 					.allowedHeaders("*");
+	// 		}
+	// 	};
+	// }
 }
+
+// .allowedOrigins("http://royalreddy.site", "http://localhost:4200")
+
 
