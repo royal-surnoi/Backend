@@ -37,7 +37,7 @@ FusionIqApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FusionIqApplication.class, args);
 	}
-
+	
 	@Bean
 	public AmazonS3 amazonS3() {
 		BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
