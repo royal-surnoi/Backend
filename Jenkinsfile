@@ -170,7 +170,7 @@ pipeline {
 
                         echo "Running curl test inside a test pod..."
                         kubectl run curl-tester --rm -i --restart=Never --image=curlimages/curl:latest -n fusioniq \
-                        -- curl -s http://backend:8080/find/all
+                        -- curl -s http://backend:8080/find/1
                     '''
                 }
             }
