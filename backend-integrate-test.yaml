@@ -42,7 +42,7 @@ spec:
             cpu: "300m"
             memory: "512Mi"
         env:
-        - name: SPRING_DATASOURCE_URL  # Fixed Name
+        - name: SPRING_DATASOURCE_URL # Fixed Name
           valueFrom:
             configMapKeyRef:
               name: backend
