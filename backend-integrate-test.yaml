@@ -70,7 +70,7 @@ metadata:
   namespace: fusioniq
 type: Opaque
 data: 
-  SPRING_DATASOURCE_PASSWORD: YWRtaW4xMjM=  # Base64 for password
+  SPRING_DATASOURCE_PASSWORD: aVpSelV5PnVZUXJ3XTNJKHdJd0VmXW18NyNKYw==  # Base64 for password
   SPRING_DATASOURCE_USERNAME: YWRtaW4=
 ---
 apiVersion: v1
