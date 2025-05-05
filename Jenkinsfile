@@ -164,6 +164,10 @@ pipeline {
                             kubectl get nodes
                             kubectl create namespace fusioniq
                             kubectl apply -f backend-integrate-test.yaml
+                            kubectl wait --namespace=backend-integration --for=condition=available deployment/backend --timeout=90s
+
+                            BACKEND_IP=$(kubectl get svc backend -n fusioniq -o jsonpath='{.spec.clusterIP}') 
+                            curl -s http://$BACKEND_IP:8080/find/all
                         """
                     }
                 }
