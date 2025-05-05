@@ -162,7 +162,7 @@ pipeline {
                         sh '''
                             aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
                             kubectl get nodes
-                            kubectl apply -f namespace
+                            kubectl apply -f namespace.yaml
                             kubectl apply -f backend-integrate-test.yaml
                             kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=90s
 
