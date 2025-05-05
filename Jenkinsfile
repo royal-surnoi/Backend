@@ -156,22 +156,42 @@ pipeline {
             }
         }
 
-        stage('EKS Login') {
-                steps {
-                    script{
-                        sh '''
-                            aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
-                            kubectl get nodes
-                            kubectl apply -f namespace.yaml
-                            kubectl apply -f backend-integrate-test.yaml
-                            kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=90s
+        stage('Integration-test') {
+            steps {
+                script {
+                    sh '''
+                        set -e
 
-                            BACKEND_IP=$(kubectl get svc backend -n fusioniq -o jsonpath='{.spec.clusterIP}') 
-                            curl -s http://$BACKEND_IP:8080/find/all
-                        '''
-                    }
+                        aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
+                        kubectl get nodes
+                        kubectl apply -f namespace.yaml
+                        kubectl apply -f backend-integrate-test.yaml
+                        kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=90s
+
+                        echo "Running curl test inside a test pod..."
+                        kubectl run curl-tester --rm -i --restart=Never --image=curlimages/curl:latest -n fusioniq \
+                        -- curl -s http://backend:8080/find/all
+                    '''
                 }
+            }
         }
+
+        // stage('Integration-test') {
+        //         steps {
+        //             script{
+        //                 sh '''
+        //                     aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
+        //                     kubectl get nodes
+        //                     kubectl apply -f namespace.yaml
+        //                     kubectl apply -f backend-integrate-test.yaml
+        //                     kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=90s
+
+        //                     BACKEND_IP=$(kubectl get svc backend -n fusioniq -o jsonpath='{.spec.clusterIP}') 
+        //                     curl -s http://$BACKEND_IP:8080/find/all
+        //                 '''
+        //             }
+        //         }
+        // }
         
     }
 
