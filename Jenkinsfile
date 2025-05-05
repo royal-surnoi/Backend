@@ -159,7 +159,7 @@ pipeline {
         stage('EKS Login') {
                 steps {
                     script{
-                        sh """
+                        sh '''
                             aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
                             kubectl get nodes
                             kubectl create namespace fusioniq
@@ -168,7 +168,7 @@ pipeline {
 
                             BACKEND_IP=$(kubectl get svc backend -n fusioniq -o jsonpath='{.spec.clusterIP}') 
                             curl -s http://$BACKEND_IP:8080/find/all
-                        """
+                        '''
                     }
                 }
         }
