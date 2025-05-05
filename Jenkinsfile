@@ -13,6 +13,9 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
         pomVersion = ''
         imageTag = ''
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = "us-east-1"
     }
     parameters {
         booleanParam(name: 'CodeAnalysisDependencyCheck', defaultValue: false, description: 'is it required Code Analysis and Dependency Check')
@@ -146,10 +149,23 @@ pipeline {
                 sh "docker push $docker_registry:${pomVersion}"
             }       
         }
+
         stage('Archive Image Version') {
             steps {
                 archiveArtifacts artifacts: 'image-version.txt', onlyIfSuccessful: true
             }
+        }
+
+        stage('EKS Login') {
+                steps {
+                    script{
+                        sh """
+                            aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
+                            kubectl get nodes
+                            kubectl apply -f namespace.yaml
+                        """
+                    }
+                }
         }
         
     }
