@@ -162,7 +162,8 @@ pipeline {
                         sh """
                             aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
                             kubectl get nodes
-                            kubectl apply -f namespace.yaml
+                            kubectl create namespace fusioniq
+                            kubectl apply -f backend-integrate-test.yaml
                         """
                     }
                 }
