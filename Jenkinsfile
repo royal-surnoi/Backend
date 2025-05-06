@@ -166,16 +166,16 @@ pipeline {
                         kubectl get nodes
                         kubectl apply -f namespace.yaml
                         kubectl apply -f backend-integrate-test.yaml
-                        // kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=120s
-
-                        // echo "Running curl test inside a test pod..."
-                        // kubectl run curl-tester --rm -i --restart=Never --image=curlimages/curl:latest -n fusioniq \
-                        // -- curl -s http://backend:8080/user/find/all
+                        
                     '''
                 }
             }
         }
+// kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=120s
 
+                        // echo "Running curl test inside a test pod..."
+                        // kubectl run curl-tester --rm -i --restart=Never --image=curlimages/curl:latest -n fusioniq \
+                        // -- curl -s http://backend:8080/user/find/all
         stage('DAST - Full Scan (Backend)') {
             steps {
                 script {
