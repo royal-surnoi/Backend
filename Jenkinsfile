@@ -183,11 +183,11 @@ pipeline {
 
                 // Start port-forward in background
                 sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
-                sleep 5 // Allow time for port-forward setup
+                sleep 5
 
-                // Run ZAP full scan and output to workspace directory
+                // Run ZAP scan with correct image
                 sh '''
-                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
+                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-weekly zap-full-scan.py \
                     -t http://host.docker.internal:8080 \
                     -r zap-backend-fullscan.html \
                     -w /zap/wrk/zap-backend-fullscan.html || true
@@ -199,11 +199,12 @@ pipeline {
                     rm pf_pid.txt
                 '''
 
-                // Archive report
+                // Archive the report
                 archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
             }
         }
     }
+
 
 
         
