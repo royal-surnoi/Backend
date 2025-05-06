@@ -176,37 +176,86 @@ pipeline {
             }
         }
 
-    stage('DAST - Full Scan (Backend)') {
-        steps {
-            script {
-                echo 'Starting OWASP ZAP full scan on backend via port-forward...'
+        stage('DAST - Full Scan (Backend)') {
+            steps {
+                script {
+                    echo 'Starting OWASP ZAP full scan on backend via port-forward...'
 
-                // Start port-forward in background
-                sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
-                sleep 5
+                    // Validate service existence
+                    sh 'kubectl get svc/backend -n fusioniq || { echo "Service backend not found"; exit 1; }'
 
-                // Pull and run ZAP full scan using GitHub Container Registry image
-                sh '''
-                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable \
-                        -t http://host.docker.internal:8080 \
-                        -r zap-backend-fullscan.html \
-                        -w /zap/wrk/zap-backend-fullscan.html || true
+                    // Start port-forward in background
+                    sh '''
+                        kubectl port-forward svc/backend 8080:8080 -n fusioniq &
+                        echo $! > pf_pid.txt
+                        sleep 5
+                        if ! ps -p $(cat pf_pid.txt) > /dev/null; then
+                            echo "Port-forward failed to start"
+                            exit 1
+                        fi
+                    '''
 
-                    echo "Listing files in workspace:"
-                    ls -lh /zap/wrk || true
-                '''
+                    // Pull and run ZAP full scan
+                    sh '''
+                        docker run --rm -v $(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable \
+                            -t http://localhost:8080 \
+                            -r zap-backend-fullscan.html \
+                            -w /zap/wrk/zap-backend-fullscan.html 2>&1 | tee zap-scan.log
+                    '''
 
-                // Stop port-forward
-                sh '''
-                    kill $(cat pf_pid.txt) || true
-                    rm pf_pid.txt
-                '''
+                    // Stop port-forward
+                    sh '''
+                        kill $(cat pf_pid.txt) || echo "Port-forward already stopped"
+                        rm pf_pid.txt
+                    '''
 
-                // Archive the report
-                archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
+                    // Check for report
+                    sh '''
+                        if [ -f zap-backend-fullscan.html ]; then
+                            echo "ZAP report generated successfully"
+                        else
+                            echo "ZAP report not found"
+                            exit 1
+                        fi
+                    '''
+
+                    // Archive artifacts
+                    archiveArtifacts artifacts: 'zap-backend-fullscan.html, zap-scan.log', allowEmptyArchive: true
+                }
             }
         }
-    }
+
+    // stage('DAST - Full Scan (Backend)') {
+    //     steps {
+    //         script {
+    //             echo 'Starting OWASP ZAP full scan on backend via port-forward...'
+
+    //             // Start port-forward in background
+    //             sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
+    //             sleep 5
+
+    //             // Pull and run ZAP full scan using GitHub Container Registry image
+    //             sh '''
+    //                 docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable \
+    //                     -t http://host.docker.internal:8080 \
+    //                     -r zap-backend-fullscan.html \
+    //                     -w /zap/wrk/zap-backend-fullscan.html || true
+
+    //                 echo "Listing files in workspace:"
+    //                 ls -lh /zap/wrk || true
+    //             '''
+
+    //             // Stop port-forward
+    //             sh '''
+    //                 kill $(cat pf_pid.txt) || true
+    //                 rm pf_pid.txt
+    //             '''
+
+    //             // Archive the report
+    //             archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
+    //         }
+    //     }
+    // }
 
 
 
