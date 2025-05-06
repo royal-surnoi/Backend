@@ -187,7 +187,7 @@ pipeline {
 
                 // Pull and run ZAP full scan using GitHub Container Registry image
                 sh '''
-                    docker run --rm -v $(pwd):/zap/wrk ghcr.io/zaproxy/zap-full-scan \
+                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable \
                         -t http://host.docker.internal:8080 \
                         -r zap-backend-fullscan.html \
                         -w /zap/wrk/zap-backend-fullscan.html || true
