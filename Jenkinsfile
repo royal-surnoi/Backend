@@ -177,32 +177,34 @@ pipeline {
         }
 
     stage('DAST - Full Scan (Backend)') {
-    steps {
-        script {
-            echo 'Starting OWASP ZAP full scan on backend via port-forward...'
+        steps {
+            script {
+                echo 'Starting OWASP ZAP full scan on backend via port-forward...'
 
-            // Start port-forward in background
-            sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
-            sleep 30 // Allow some time for port-forward to establish
+                // Start port-forward in background
+                sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
+                sleep 5 // Allow time for port-forward setup
 
-            // Run OWASP ZAP full scan via Docker
-            sh '''
-                docker run --rm -v $PWD:/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
-                  -t http://host.docker.internal:8080 \
-                  -r zap-backend-fullscan.html || true
-            '''
+                // Run ZAP full scan and output to workspace directory
+                sh '''
+                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
+                    -t http://host.docker.internal:8080 \
+                    -r zap-backend-fullscan.html \
+                    -w /zap/wrk/zap-backend-fullscan.html || true
+                '''
 
-            // Kill the background port-forward
-            sh '''
-                kill $(cat pf_pid.txt) || true
-                rm pf_pid.txt
-            '''
+                // Stop port-forward
+                sh '''
+                    kill $(cat pf_pid.txt) || true
+                    rm pf_pid.txt
+                '''
 
-            // Archive the ZAP report
-            archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
+                // Archive report
+                archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
+            }
         }
     }
-}
+
 
         
     }
