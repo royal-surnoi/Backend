@@ -187,7 +187,7 @@ pipeline {
 
                 // Run ZAP scan with correct image
                 sh '''
-                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-weekly zap-full-scan.py \
+                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
                     -t http://host.docker.internal:8080 \
                     -r zap-backend-fullscan.html \
                     -w /zap/wrk/zap-backend-fullscan.html || true
