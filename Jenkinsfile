@@ -186,7 +186,7 @@ pipeline {
 
                     // Start port-forward in background
                     sh '''
-                        kubectl port-forward svc/backend 8080:8080 -n fusioniq &
+                        kubectl port-forward svc/backend 8081:8080 -n fusioniq &
                         echo $! > pf_pid.txt
                         sleep 5
                         if ! ps -p $(cat pf_pid.txt) > /dev/null; then
@@ -198,7 +198,7 @@ pipeline {
                     // Pull and run ZAP full scan
                     sh '''
                         docker run --rm -v $(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable \
-                            -t http://localhost:8080 \
+                            -t http://localhost:8081 \
                             -r zap-backend-fullscan.html \
                             -w /zap/wrk/zap-backend-fullscan.html 2>&1 | tee zap-scan.log
                     '''
