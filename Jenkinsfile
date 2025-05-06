@@ -185,14 +185,15 @@ pipeline {
                 sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
                 sleep 5
 
-                // Run ZAP scan with correct image
+                // Pull and run ZAP full scan using GitHub Container Registry image
                 sh '''
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker run --rm -v $(pwd):/zap/wrk ghcr.io/zaproxy/zap-full-scan \
+                        -t http://host.docker.internal:8080 \
+                        -r zap-backend-fullscan.html \
+                        -w /zap/wrk/zap-backend-fullscan.html || true
 
-                    docker run --rm -v $(pwd):/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
-                    -t http://host.docker.internal:8080 \
-                    -r zap-backend-fullscan.html \
-                    -w /zap/wrk/zap-backend-fullscan.html || true
+                    echo "Listing files in workspace:"
+                    ls -lh /zap/wrk || true
                 '''
 
                 // Stop port-forward
@@ -206,6 +207,7 @@ pipeline {
             }
         }
     }
+
 
 
 
