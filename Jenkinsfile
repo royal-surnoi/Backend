@@ -184,7 +184,7 @@ pipeline {
                     // Validate service existence
                     sh 'kubectl get svc/backend -n fusioniq || { echo "Service backend not found"; exit 1; }'
 
-                    // Start port-forward
+                    // Start port-forward with debugging
                     sh '''
                         # Kill any existing port-forward processes
                         pkill -f "kubectl port-forward svc/backend" || true
@@ -193,20 +193,24 @@ pipeline {
                         sleep 5
                         if ! ps -p $(cat pf_pid.txt) > /dev/null; then
                             echo "Port-forward failed to start"
+                            kubectl describe svc/backend -n fusioniq
+                            kubectl get pods -n fusioniq -l app=backend
                             exit 1
                         fi
+                        # Verify port-forward connectivity
+                        nc -zv localhost 8081 || { echo "Port-forward not working"; exit 1; }
                     '''
 
                     // Verify backend accessibility
                     sh '''
-                        curl -f http://localhost:8081 || { echo "Backend not accessible"; exit 1; }
+                        curl -f http://localhost:8081/health || { echo "Backend not accessible"; exit 1; }
                     '''
 
                     // Run ZAP full scan
                     sh '''
                         docker run --rm -v $(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable \
                             zap-full-scan.py \
-                            -t http://localhost:8081 \
+                            -t http://localhost:8081/health \
                             -r zap-backend-fullscan.html \
                             -w /zap/wrk/zap-backend-fullscan.html 2>&1 | tee zap-scan.log
                     '''
