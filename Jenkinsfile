@@ -176,22 +176,34 @@ pipeline {
             }
         }
 
-        // stage('Integration-test') {
-        //         steps {
-        //             script{
-        //                 sh '''
-        //                     aws eks update-kubeconfig --region us-east-1 --name fusioniq-dev
-        //                     kubectl get nodes
-        //                     kubectl apply -f namespace.yaml
-        //                     kubectl apply -f backend-integrate-test.yaml
-        //                     kubectl wait --namespace=fusioniq --for=condition=available deployment/backend --timeout=90s
+    stage('DAST - Full Scan (Backend)') {
+    steps {
+        script {
+            echo 'Starting OWASP ZAP full scan on backend via port-forward...'
 
-        //                     BACKEND_IP=$(kubectl get svc backend -n fusioniq -o jsonpath='{.spec.clusterIP}') 
-        //                     curl -s http://$BACKEND_IP:8080/find/all
-        //                 '''
-        //             }
-        //         }
-        // }
+            // Start port-forward in background
+            sh 'kubectl port-forward svc/backend 8080:8080 -n fusioniq & echo $! > pf_pid.txt'
+            sleep 30 // Allow some time for port-forward to establish
+
+            // Run OWASP ZAP full scan via Docker
+            sh '''
+                docker run --rm -v $PWD:/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
+                  -t http://host.docker.internal:8080 \
+                  -r zap-backend-fullscan.html || true
+            '''
+
+            // Kill the background port-forward
+            sh '''
+                kill $(cat pf_pid.txt) || true
+                rm pf_pid.txt
+            '''
+
+            // Archive the ZAP report
+            archiveArtifacts artifacts: 'zap-backend-fullscan.html', onlyIfSuccessful: false
+        }
+    }
+}
+
         
     }
 
