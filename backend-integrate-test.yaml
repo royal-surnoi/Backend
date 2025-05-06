@@ -70,7 +70,7 @@ metadata:
   namespace: fusioniq # it is for test should be unique while implementing intergation test
 type: Opaque
 data: 
-  SPRING_DATASOURCE_PASSWORD: IzhqemI1ZGRPKDpITmktYipBeXh6MzRbbGMqTg==  # Base64 for password
+  SPRING_DATASOURCE_PASSWORD: ZT9iemstSWZaPiEwNSRtTEFGMXNUaS1DSFdyTA==  # Base64 for password
   SPRING_DATASOURCE_USERNAME: YWRtaW4=
 ---
 apiVersion: v1
